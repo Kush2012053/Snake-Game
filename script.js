@@ -18,6 +18,9 @@ var foodY;
 
 var gameOver = false;
 
+var score = 0;
+var gameOverScreen = document.getElementById("game-over");
+
 window.onload = function () {
   // Set board height and width
   board = document.getElementById("board");
@@ -47,6 +50,8 @@ function update() {
   if (snakeX == foodX && snakeY == foodY) {
     snakeBody.push([foodX, foodY]);
     placeFood();
+    score += 10; // Increase the score when food is eaten
+    updateScore(); // Update the score displayed on the screen
   }
 
   // body of snake will grow
@@ -74,14 +79,18 @@ function update() {
   ) {
     // Out of bound condition
     gameOver = true;
-    alert("Game Over");
+    if (gameOver) {
+      showGameOverScreen();
+    }
   }
 
   for (let i = 0; i < snakeBody.length; i++) {
     if (snakeX == snakeBody[i][0] && snakeY == snakeBody[i][1]) {
       // Snake eats own body
       gameOver = true;
-      alert("Game Over");
+      if (gameOver) {
+        showGameOverScreen();
+      }
     }
   }
 }
@@ -115,4 +124,31 @@ function placeFood() {
 
   //in y coordinates.
   foodY = Math.floor(Math.random() * total_row) * blockSize;
+}
+
+function updateScore() {
+  var scoreElement = document.getElementById("score");
+  scoreElement.textContent = "Score: " + score;
+}
+
+
+function showGameOverScreen() {
+  var finalScoreElement = document.getElementById("final-score");
+  finalScoreElement.textContent = "Final Score: " + score;
+  gameOverScreen.style.display = "block";
+}
+
+
+function resetGame() {
+  // Reset variables, clear the canvas, and hide the game over screen
+  snakeX = blockSize * 5;
+  snakeY = blockSize * 5;
+  speedX = 0;
+  speedY = 0;
+  snakeBody = [];
+  score = 0;
+  placeFood();
+  gameOver = false;
+  updateScore();
+  gameOverScreen.style.display = "none";
 }
